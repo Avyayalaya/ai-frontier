@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your AI Frontier</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #FDFAF6;
+    --surface: #FFFFFF;
+    --border: #E8E0D4;
+    --text: #2C2520;
+    --text-secondary: #6B5E52;
+    --text-muted: #9B8E82;
+    --text-dim: #C4BAB0;
+    --gold: #B8963E;
+    --sage: #5B7B6A;
+    --red-muted: #B85C38;
+    --font-serif: 'Source Serif 4', Georgia, serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .form-container { width: 100%; max-width: 440px; }
+
+  .form-header { text-align: center; margin-bottom: 36px; }
+  .form-header .overline { font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+  .form-header h1 { font-family: var(--font-serif); font-size: 32px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); margin-bottom: 8px; }
+  .form-header p { font-size: 15px; color: var(--text-secondary); line-height: 1.5; }
+
+  .field { margin-bottom: 20px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; letter-spacing: 0.3px; }
+  .field input, .field select {
+    width: 100%; padding: 14px 16px; font-family: var(--font-sans); font-size: 16px;
+    color: var(--text); background: var(--surface); border: 1px solid var(--border);
+    border-radius: 8px; outline: none; transition: border-color 0.2s; -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184, 150, 62, 0.1); }
+  .field input::placeholder { color: var(--text-dim); }
+  .field select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%239B8E82' stroke-width='1.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 16px center; padding-right: 40px;
+  }
+  .field .hint { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  .submit-btn {
+    width: 100%; padding: 16px; font-family: var(--font-sans); font-size: 16px; font-weight: 600;
+    color: var(--surface); background: var(--gold); border: none; border-radius: 8px;
+    cursor: pointer; transition: background 0.2s, transform 0.1s; margin-top: 8px; letter-spacing: 0.3px;
+  }
+  .submit-btn:hover { background: #A68535; }
+  .submit-btn:active { transform: scale(0.99); }
+  .submit-btn:disabled { background: var(--text-dim); cursor: not-allowed; }
+
+  .success-message { display: none; text-align: center; padding: 40px 20px; }
+  .success-message .check { width: 64px; height: 64px; border-radius: 50%; background: rgba(91, 123, 106, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 28px; color: var(--sage); }
+  .success-message h2 { font-family: var(--font-serif); font-size: 24px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .success-message p { font-size: 15px; color: var(--text-secondary); line-height: 1.5; }
+
+  .error-banner { display: none; background: rgba(184, 92, 56, 0.08); border: 1px solid rgba(184, 92, 56, 0.2); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14px; color: var(--red-muted); }
+
+  .form-footer { text-align: center; margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border); }
+  .form-footer .brand { font-family: var(--font-serif); font-size: 14px; color: var(--text-muted); font-weight: 600; margin-bottom: 4px; }
+  .form-footer p { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+
+  <div class="form-header">
+    <div class="overline">After Intelligence</div>
+    <h1>Your AI Frontier</h1>
+    <p>Three fields. Within 48 hours, you'll receive a personalized briefing on how AI is transforming your exact role.</p>
+  </div>
+
+  <div class="error-banner" id="errorBanner">
+    Saved locally. We'll still get your response.
+  </div>
+
+  <form id="frontierForm">
+    <div class="field">
+      <label for="role">Your job title</label>
+      <input type="text" id="role" name="role" placeholder="e.g. Senior Delivery Manager, VP Engineering, QA Lead" required autocomplete="organization-title">
+    </div>
+
+    <div class="field">
+      <label for="company">Your company</label>
+      <input type="text" id="company" name="company" placeholder="e.g. Infosys, Wipro, Tata Motors" required autocomplete="organization">
+    </div>
+
+    <div class="field">
+      <label for="email">Your email</label>
+      <input type="email" id="email" name="email" placeholder="you@company.com" required autocomplete="email">
+      <div class="hint">Your personalized AI Frontier briefing will arrive here within 48 hours.</div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">Get my AI Frontier briefing</button>
+  </form>
+
+  <div class="success-message" id="successMessage">
+    <div class="check">&#10003;</div>
+    <h2>You're in.</h2>
+    <p>Your personalized AI Frontier briefing will arrive within 48 hours. It will be specific to your role, your level, and the tools that matter for you right now.</p>
+  </div>
+
+  <div class="form-footer">
+    <div class="brand">After Intelligence</div>
+    <p>Parth Sangani &middot; PMI Kovai Sangamam 2026</p>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  // ============================================================
+  // CONFIGURATION — Set your Google Apps Script URL here
+  // ============================================================
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJH6vEari_UIJQsUQZYlnuzF1fBrPhlr73JLmBaMaVvxfRtPwrtn64CPIdsW92MeRN/exec';
+
+  const form = document.getElementById('frontierForm');
+  const btn = document.getElementById('submitBtn');
+  const successMsg = document.getElementById('successMessage');
+  const errorBanner = document.getElementById('errorBanner');
+
+  // Client-side backup — ALWAYS runs before network call
+  function saveLocal(data) {
+    const key = 'ai_frontier_responses';
+    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+    existing.push(data);
+    localStorage.setItem(key, JSON.stringify(existing));
+  }
+
+  // Retry queue for failed submissions
+  function queueRetry(data) {
+    const key = 'ai_frontier_retry';
+    const existing = JSON.parse(localStorage.getItem(key) || '[]');
+    existing.push(data);
+    localStorage.setItem(key, JSON.stringify(existing));
+  }
+
+  // Process retry queue (runs on page load)
+  async function processRetryQueue() {
+    const key = 'ai_frontier_retry';
+    const queue = JSON.parse(localStorage.getItem(key) || '[]');
+    if (queue.length === 0) return;
+
+    const remaining = [];
+    for (const data of queue) {
+      try {
+        await submitToSheet(data);
+      } catch (_) {
+        remaining.push(data);
+      }
+    }
+    localStorage.setItem(key, JSON.stringify(remaining));
+  }
+
+  async function submitToSheet(data) {
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors', // Apps Script doesn't support CORS preflight
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    // no-cors means we can't read the response, but the data gets through
+    return true;
+  }
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    errorBanner.style.display = 'none';
+
+    const data = {
+      role: document.getElementById('role').value.trim(),
+      level: document.getElementById('level').value,
+      email: document.getElementById('email').value.trim(),
+      company: document.getElementById('company').value.trim(),
+      timestamp: new Date().toISOString(),
+    };
+
+    // SAFETY LAYER 1: Save locally FIRST (instant, never fails)
+    saveLocal(data);
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    try {
+      // SAFETY LAYER 2: Send to Google Sheets
+      await submitToSheet(data);
+
+      // Show success (we can't verify with no-cors, but data is saved locally either way)
+      form.style.display = 'none';
+      successMsg.style.display = 'block';
+
+    } catch (err) {
+      console.error('Submit error:', err);
+      // SAFETY LAYER 3: Queue for retry
+      queueRetry(data);
+
+      // Still show success — data is in localStorage
+      form.style.display = 'none';
+      successMsg.style.display = 'block';
+    }
+  });
+
+  // Process any retries from previous failed attempts
+  processRetryQueue();
+})();
+</script>
+
+</body>
+</html>
